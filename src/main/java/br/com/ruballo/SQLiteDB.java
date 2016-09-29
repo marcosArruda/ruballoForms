@@ -45,6 +45,36 @@ public class SQLiteDB {
         closeConnection(stmt);
     }
 
+    public static String getOfficesSelects() throws SQLException{
+        //"SELECT OFFICE_ID, OFFICE_NAME FROM OFFICE;"
+        ResultSet rs = executeQuery(Queries.GET_ALL_OFFICES.getValue());
+        StringBuffer officeSelects = new StringBuffer();
+        while(rs.next()){
+            officeSelects.append("<option value=\"")
+                    .append(rs.getInt("OFFICE_ID"))
+                    .append("\">")
+                    .append(rs.getString("OFFICE_NAME"))
+                    .append("</option>");
+        }
+
+        return officeSelects.toString();
+    }
+
+    public static String getServiceSelects() throws SQLException{
+        //"SELECT OFFICE_ID, OFFICE_NAME FROM OFFICE;"
+        ResultSet rs = executeQuery(Queries.GET_SERVICE_NAMES_ONLY.getValue());
+        StringBuffer serviceSelects = new StringBuffer();
+        while(rs.next()){
+            serviceSelects.append("<option value=\"")
+                    .append(rs.getString("SERVICE_NAME"))
+                    .append("\">")
+                    .append(rs.getString("SERVICE_NAME"))
+                    .append("</option>");
+        }
+
+        return serviceSelects.toString();
+    }
+
     //------------------------------------------------------------------------------------------
     // Auxiliary methods
     //------------------------------------------------------------------------------------------

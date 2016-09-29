@@ -15,7 +15,7 @@
     </head>
     <body>
     <h1>Formulário</h1>
-    <p>Escolha o Office e o Service:</p>
+    <p>Escolha o Office:</p>
 
     <form style="padding-left: 30px;" action="form" method="post">
         Office:<select id="officeId" name="officeId">
@@ -23,10 +23,6 @@
                </select>
         <br/>
         <hr/>
-        Service:<select id="serviceName" name="serviceName">
-                    ${param.get("serviceSelect")}
-                </select>
-        <br/><hr/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

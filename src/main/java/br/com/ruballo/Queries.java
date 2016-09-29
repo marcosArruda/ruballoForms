@@ -209,7 +209,11 @@ public enum Queries {
                         " INSERT INTO SERVICE VALUES (130, 10, 'service 12', DATETIME('now'), DATETIME('now')); " +
                         " INSERT INTO SERVICE VALUES (131, 10, 'service 13', DATETIME('now'), DATETIME('now')); " +
 
-                        " ");
+                        " "),
+
+    GET_ALL_OFFICES("SELECT OFFICE_ID, OFFICE_NAME FROM OFFICE;"),
+    GET_SERVICE_NAMES_ONLY("SELECT DISTICT SERVICE_NAME FROM SERVICE;"),
+    GET_SERVICE_BY_OFFICE("SELECT SERVICE_ID, OFFICE_ID, SERVICE_NAME FROM SERVICE WHERE OFFICE_ID = ?;");
     //FOREIGN KEY(trackartist) REFERENCES artist(artistid)
     //"YYYY-MM-DD HH:MM:SS"
 
