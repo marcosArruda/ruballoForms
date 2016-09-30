@@ -9,22 +9,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by marcosarruda on 9/24/16.
  */
-@WebServlet("form")
+@WebServlet("/form")
 public class FormServlet extends HttpServlet{
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("officeSelect", mountOfficeSelect());
+        request.setAttribute("list", mountOfficeSelect());
         //request.setAttribute("serviceSelect", mountServiceSelect());
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("index.jsp");
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/form.jsp");
         rd.forward(request, response);
     }
 
-    private String mountOfficeSelect(){
+    private ArrayList<Office> mountOfficeSelect(){
         try{
             return SQLiteDB.getOfficesSelects();
         }catch (SQLException e){
@@ -33,9 +34,9 @@ public class FormServlet extends HttpServlet{
         }
     }
 
-    private String mountServiceSelect(){
+    private ArrayList<Service> mountServiceSelect(int officeId){
         try{
-            return SQLiteDB.getServiceSelects();
+            return SQLiteDB.getServiceSelects(officeId);
         }catch (SQLException e){
             e.printStackTrace();
             return null;
@@ -46,8 +47,10 @@ public class FormServlet extends HttpServlet{
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int officeId = Integer.parseInt(request.getParameter("officeId"));
+
         request.setAttribute("officeId", officeId);
-        RequestDispatcher rd = getServletContext().getRequestDispatcher("services.jsp");
+        request.setAttribute("services", mountServiceSelect(officeId));
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/services.jsp");
         rd.forward(request, response);
     }
 }

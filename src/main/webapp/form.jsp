@@ -1,4 +1,4 @@
-<!-- %@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" % -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
     <head>
         <title>Forms do Ruballo</title>
@@ -14,19 +14,20 @@
         </style>
     </head>
     <body>
-    <h1>Formulário</h1>
-    <p>Escolha o Office e o Service:</p>
+    <h1>Formul&aacute;rio</h1>
+    <p>Escolha o Office:</p>
 
     <form style="padding-left: 30px;" action="form" method="post">
         Office:<select id="officeId" name="officeId">
-                    ${param.get("officeSelect")}
-               </select>
+                <c:if test="${not empty list}">
+                    <c:forEach items="${list}" var="office">
+                        <option value="${office.id}">${office.name}</option>
+                    </c:forEach>
+                </c:if>
+
+                </select>
         <br/>
         <hr/>
-        Service:<select id="serviceName" name="serviceName">
-                    ${param.get("serviceSelect")}
-                </select>
-        <br/><hr/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

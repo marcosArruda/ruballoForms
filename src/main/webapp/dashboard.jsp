@@ -19,18 +19,17 @@
         </style>
     </head>
     <body>
-    <h1>Formul&aacute;rio</h1>
-    <p>Escolha YES/NO/OTHERS para cada Servi&ccedil;o:</p>
+    <h1>Formulário</h1>
+    <p>Escolha YES ou NO para cada Serviço:</p>
 
     <form style="padding-left: 30px;" action="finish" method="post">
         <c:if test="${not empty services}">
             <table class="tg">
-
+                <!-- here should go some titles... -->
                 <tr>
                     <th class="tg-yw4l">Service ID</th>
                     <th class="tg-yw4l">Office ID</th>
                     <th class="tg-yw4l">Service Name</th>
-                    <th class="tg-yw4l">STATUS</th>
                 </tr>
                 <c:forEach items="${services}" var="service">
                     <tr>
@@ -44,9 +43,8 @@
                             <c:out value="${service.name}" />
                         </td>
                         <td>
-                            <input type="radio" name="service${service.id}" value="yes"> YES
-                            <input type="radio" name="service${service.id}" value="no"> NO
-                            <input type="radio" name="service${service.id}" value="others"> OTHERS
+                            <input type="radio" name="${service.name}" value="yes"> YES
+                            <input type="radio" name="${service.name}" value="no"> NO
                         </td>
                     </tr>
                 </c:forEach>

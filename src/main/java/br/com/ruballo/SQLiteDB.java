@@ -1,12 +1,15 @@
 package br.com.ruballo;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by marcosarruda on 9/24/16.
  */
 public class SQLiteDB {
+
+    private static String URI_DB = "jdbc:sqlite:ruballo.db";
 
     public static ResultSet executeQuery(String query) throws SQLException{
 
@@ -16,7 +19,8 @@ public class SQLiteDB {
 
         }
         ResultSet r = stmt.executeQuery(query);
-        closeConnection(stmt);
+        System.out.println("executeQuery() executed! - Query: " + query);
+        //closeConnection(stmt);
         return r;
     }
 
@@ -27,7 +31,8 @@ public class SQLiteDB {
 
         }
         stmt.executeUpdate(query);
-        System.out.println("update '"+query.substring(0,20)+"(...)' executed sucessfully!" );
+        //stmt.getConnection().commit();
+        System.out.println("update '"+query+"' executed sucessfully!" );
         closeConnection(stmt);
     }
 
@@ -41,38 +46,37 @@ public class SQLiteDB {
             stmt.setObject(i+1, params[i]);
         }
         stmt.executeUpdate();
+        stmt.getConnection().commit();
         System.out.println("update '"+query.substring(0,20)+"(...)' executed sucessfully!" );
         closeConnection(stmt);
     }
 
-    public static String getOfficesSelects() throws SQLException{
+    public static ArrayList<Office> getOfficesSelects() throws SQLException{
         //"SELECT OFFICE_ID, OFFICE_NAME FROM OFFICE;"
         ResultSet rs = executeQuery(Queries.GET_ALL_OFFICES.getValue());
-        StringBuffer officeSelects = new StringBuffer();
+        ArrayList<Office> offices = new ArrayList<Office>();
         while(rs.next()){
-            officeSelects.append("<option value=\"")
-                    .append(rs.getInt("OFFICE_ID"))
-                    .append("\">")
-                    .append(rs.getString("OFFICE_NAME"))
-                    .append("</option>");
+            Office o = new Office(rs.getInt("OFFICE_ID"), rs.getString("OFFICE_NAME"));
+            offices.add(o);
         }
+        System.out.println("Existem " + offices.size() + " offices!");
+        closeConnection(rs.getStatement());
 
-        return officeSelects.toString();
+        return offices;
     }
 
-    public static String getServiceSelects() throws SQLException{
-        //"SELECT OFFICE_ID, OFFICE_NAME FROM OFFICE;"
-        ResultSet rs = executeQuery(Queries.GET_SERVICE_NAMES_ONLY.getValue());
-        StringBuffer serviceSelects = new StringBuffer();
-        while(rs.next()){
-            serviceSelects.append("<option value=\"")
-                    .append(rs.getString("SERVICE_NAME"))
-                    .append("\">")
-                    .append(rs.getString("SERVICE_NAME"))
-                    .append("</option>");
-        }
+    public static ArrayList<Service> getServiceSelects(int officeId) throws SQLException{
 
-        return serviceSelects.toString();
+        //"SELECT OFFICE_ID, OFFICE_NAME FROM OFFICE;"
+        ResultSet rs = SQLiteDB.executeQuery(Queries.GET_SERVICE_BY_OFFICE.getValue() + officeId + ";");
+        ArrayList<Service> services = new ArrayList<Service>();
+        while(rs.next()){
+            Service s = new Service(rs.getInt("SERVICE_ID"), rs.getInt("OFFICE_ID"), rs.getString("SERVICE_NAME"));
+            services.add(s);
+        }
+        System.out.println("Existem " + services.size() + " services!");
+        closeConnection(rs.getStatement());
+        return services;
     }
 
     //------------------------------------------------------------------------------------------
@@ -83,8 +87,9 @@ public class SQLiteDB {
         Statement s = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:ruballo.db");
-            System.out.println("Opened database successfully");
+            c = DriverManager.getConnection(URI_DB);
+            System.out.println("o caminho(URL é): "+c.getMetaData().getURL());
+            System.out.println("Created the statement!!");
 
             s = c.createStatement();
         } catch ( Exception e ) {
@@ -100,10 +105,9 @@ public class SQLiteDB {
         PreparedStatement s = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:ruballo.db");
-            System.out.println("Opened database successfully");
-
+            c = DriverManager.getConnection(URI_DB);
             s = c.prepareStatement(query);
+            System.out.println("Created Prepared Statement!");
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             s = null;
@@ -118,31 +122,5 @@ public class SQLiteDB {
         Connection c = s.getConnection();
         s.close();
         c.close();
-    }
-
-    public static void main( String args[] )
-    {
-        Connection c = null;
-        Statement stmt = null;
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
-            System.out.println("Opened database successfully");
-            stmt = c.createStatement();
-            String sql = "CREATE TABLE COMPANY " +
-                    "(ID INT PRIMARY KEY     NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " AGE            INT     NOT NULL, " +
-                    " ADDRESS        CHAR(50), " +
-                    " SALARY         REAL)";
-            //TEXT = A date in a format like "YYYY-MM-DD HH:MM:SS.SSS"
-            stmt.executeUpdate(sql);
-            stmt.close();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        System.out.println("Table created successfully");
     }
 }
